@@ -11,6 +11,6 @@ provider "azurerm" {
   features {}
 }
 resource "azurerm_resource_group" "myx" {
-  name     = "merababu"
+  name     = "merababu2"
   location = "eastus"
 }
