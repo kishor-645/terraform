@@ -13,6 +13,6 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "rg" {
-    location = "eastus"
     name = "myrg098"
+    location = "eastus"
 }
