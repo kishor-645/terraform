@@ -10,9 +10,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
-
-
-resource "azurerm_resource_group" "rg" {
-    name = "myrg098"
-    location = "eastus"
+resource "azurerm_resource_group" "myx" {
+  name     = "merababu"
+  location = "eastus"
 }
