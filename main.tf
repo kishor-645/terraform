@@ -14,3 +14,7 @@ resource "azurerm_resource_group" "yourx" {
   name     = "lamba"
   location = "eastus"
 }
+resource "azurerm_resource_group" "youry" {
+  name     = "lamba2"
+  location = "eastus"
+}
