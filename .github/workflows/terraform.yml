@@ -50,7 +50,17 @@ jobs:
           exit 0
         fi
 
-    # Add a prompt to ask the user whether to apply or destroy changes
+    - name: Review Terraform Plan
+      uses: tfsec/tfsec-pr-commenter-action@v2
+      with:
+        working-directory: .
+        terraform-dir: .
+        env: dev
+        
+    - name: Manual Approval (Dev)
+      uses: trstringer/manual-approval@v1
+
+    # Applying step of terraform
     - name: Apply Terraform changes
       run: terraform apply --auto-approve
 
