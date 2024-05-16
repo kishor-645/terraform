@@ -3,15 +3,11 @@ name: Terraform Deploy
 on:
   workflow_dispatch:
 
+env:
+  TERRAFORM_VERSION: 1.3.7
+
 jobs:
-  terraform:
-    name: 'terraform configuration'
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      
+  terraform-Plan:      
     runs-on: ubuntu-latest
     environment: dev
     
@@ -19,11 +15,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
         
-    # Install the latest version of the Terraform CLI
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v2
       with:
-        terraform_wrapper: false
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+        
+    - name: Azure Login (Dev)
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
     - name: Initialize Terraform
       run: terraform init
@@ -35,7 +35,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
-    - name: Terraform Plan
+    - name: Terraform-Plan
       id: tf-plan
       run: |
         export exitcode=0
@@ -50,16 +50,34 @@ jobs:
           exit 0
         fi
 
-    - name: Review Terraform Plan
-      uses: tfsec/tfsec-pr-commenter-action@main
+    - name: Upload Terraform Plan
+      uses: actions/upload-artifact@v3
       with:
-        working_directory: .
-        github_token: ${{ secrets.GIT_TOKEN }}
-        tfsec_args: --env=dev
-        
-    - name: Manual Approval (Dev)
-      uses: trstringer/manual-approval@v1
+        name: dev-plan
+        path: dev.plan
 
+  apply-dev:
+    needs: terraform-Plan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v3
+      with:
+        name: dev-plan
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+        
+    - name: Azure Login (Dev)
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+      
     # Applying step of terraform
     - name: Apply Terraform changes
       run: terraform apply --auto-approve
