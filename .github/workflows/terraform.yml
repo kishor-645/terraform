@@ -54,7 +54,7 @@ jobs:
       uses: tfsec/tfsec-pr-commenter-action@main
       with:
         working_directory: .
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GIT_TOKEN }}
         tfsec_args: --env=dev
         
     - name: Manual Approval (Dev)
