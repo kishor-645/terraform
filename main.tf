@@ -10,11 +10,8 @@ terraform {
 provider "azurerm" {
   features {}
 }
-resource "azurerm_resource_group" "yourx" {
-  name     = "lamba"
+resource "azurerm_resource_group" "bhopa" {
+  name     = "bhopa"
   location = "eastus"
 }
-resource "azurerm_resource_group" "youry" {
-  name     = "lamba2"
-  location = "eastus"
-}
+
