@@ -51,11 +51,11 @@ jobs:
         fi
 
     - name: Review Terraform Plan
-      uses: tfsec/tfsec-pr-commenter-action@v1.0.0
+      uses: tfsec/tfsec-pr-commenter-action@main
       with:
-        working-directory: .
-        terraform-dir: .
-        env: dev
+        working_directory: .
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tfsec_args: --env=dev
         
     - name: Manual Approval (Dev)
       uses: trstringer/manual-approval@v1
