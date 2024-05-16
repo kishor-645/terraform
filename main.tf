@@ -22,3 +22,7 @@ resource "azurerm_resource_group" "bhopa3" {
   name     = "bhopa3"
   location = "eastus"
 }
+resource "azurerm_resource_group" "bhopa4" {
+  name     = "bhopa4"
+  location = "eastus"
+}
